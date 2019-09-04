@@ -11,5 +11,5 @@ Got to GitHub and create repo node-example
 git remote add origin https://github.com/jerryjones2/node-example.git
 git push -u origin master
 
-Links:
+Links:<br/>
 https://www.atlassian.com/git/tutorials/saving-changes/gitignore
