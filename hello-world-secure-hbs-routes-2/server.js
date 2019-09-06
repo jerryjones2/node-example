@@ -43,8 +43,13 @@ function create(config) {
     }));
     
     let routes = require('./routes');
+    
     routes.init(server);
     
+    server.use((err, req, res, next) => {
+        console.log("ERROR: "+err);
+        next();
+    });
 }
 
 function start() {

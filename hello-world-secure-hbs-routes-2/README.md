@@ -1,6 +1,6 @@
 npm init  
 
-npm install express express-session keycloak-connect cors path router hbs body-parser serve-favicon lodash --save  
+npm install express express-session keycloak-connect cors path router hbs body-parser serve-favicon lodash mongoose fs --save  
 
 User: test.user
 Pass: test.user
