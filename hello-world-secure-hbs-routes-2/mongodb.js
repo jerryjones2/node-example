@@ -2,7 +2,7 @@
 var caPath = __dirname + "/ssl/ca.pem";
 var hostname = "ag03sdclb00041.dcsouth.tenn,ag03sdclb00042.dcsouth.tenn,ag03sdclb00043.dcsouth.tenn";
 var setname = "aemrs";
-var auth = "DevJerry:";
+var auth = "DevJerry:Cp86oUIk";
 // Connect validating the returned certificates from the server
 
 var fs = require('fs');
