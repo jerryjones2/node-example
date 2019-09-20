@@ -3,6 +3,82 @@
     <head>
         <title>{{pageTitle}}</title>
         {{> head}}
+        <script   src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="   crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function(){
+
+                function objectifyForm(formArray) {//serialize data function
+                    var returnArray = {};
+                    for (var i = 0; i < formArray.length; i++){
+                        returnArray[formArray[i]['name']] = formArray[i]['value'];
+                    }
+                    return returnArray;
+                }
+                function convertFormToJson(form) {
+                    var formData = form.serializeArray();
+                    var jsonData = objectifyForm(formData);
+                    jsonData = JSON.stringify(jsonData);
+                    return jsonData;
+                }
+
+                $("#submit").on('click', function(){
+                    var form = $("#todo-form");
+                    var jsonData = convertFormToJson(form);
+                    console.log(jsonData);
+                    // send ajax
+                    $.ajax({
+                        url: '/api/todos', // url where to submit the request
+                        type : "POST", // type of action POST || GET
+                        dataType : 'json', // data type
+                        data : jsonData, // post data || get data
+                        contentType: 'application/json;charset=UTF-8',
+                        success : function(result) {
+                            // you can see the result from the console tab of the developer tools
+                            console.log(result);
+                            alert('Todo Saved');
+                            $("#text").val('');
+                        },
+                        error: function(xhr, resp, text) {
+                            console.log(xhr, resp, text);
+                            alert('ERRROR: '+text)
+                        }
+                    })
+                });
+            })
+            function getTodos() {
+                $.ajax({
+                    type: 'GET',
+                    url: "/api/todos",
+                    success: function(data)
+                    {
+                        console.log('getTodos result code: '+data.code);
+                        
+                        $("#dataTable tbody").empty();
+
+                        var trHTML = '<tr><th>_id</th><th>text</th><th>completed</th><th>completedAt</th></tr>';
+                        $.each(data.result, function (i, item) {
+                             trHTML += '<tr>'
+                             trHTML += '<td>' + data.result[i]._id + '</td>' 
+                             trHTML += '<td>' + data.result[i].text + '</td>' 
+                             trHTML += '<td>' + data.result[i].completed + '</td>' 
+                             trHTML += '<td>' + data.result[i].completedAt + '</td>' 
+                             trHTML += '</tr>'
+                             ;
+                        });
+
+                        $("#dataTable tbody").append(trHTML);
+ 
+
+                    },
+                    error: function(error) {
+                        console.error;
+                        $("#dataTable tbody").empty();
+                        var trHTML = 'Could not load data: ' + error.statusText;
+                        $("#dataTable tbody").append(trHTML);
+                    }
+                });
+            }
+        </script>
     </head>
     <body>
         {{> header}}
@@ -14,15 +90,32 @@
         </div>
         <!-- End Page Title Component -->
         
-        <p>Secured stuff here</p>
+            <form id="todo-form" action="#">
+                <label for="text">Add Todo *</label>
+                <input id="text" name="text" type="text" class="required">  
+                <input id="submit" type="button" name="submit" value="submit">
+            </form>
         <!-- Start panel component -->
         <div class="tn-panel">
             <div class="panel">
                 <div class="tn-rte">
-                    <h2>This is a Panel with Secured text </h2>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean laoreet diam diam, vel lacinia sem dictum vel. Donec tempor, erat sed ornare vehicula, dui augue lobortis lacus, sit amet venenatis neque augue a lorem. Proin pulvinar purus justo, in euismod massa laoreet nec. Integer lacinia imperdiet venenatis. Maecenas maximus sagittis tristique. Ut vitae neque dolor.
-                    </p>
+                    <h2>Todos from MongoDB (ajax)</h2>
+                    <button onclick="getTodos()">Get Todos</button>
+                    
+                    <table id="dataTable" border='1'>
+                        <tr><th>_id</th><th>text</th><th>completed</th><th>completedAt</th></tr>
+                    </table>
+
+                </div>
+            </div>
+            <div class="panel">
+                <div class="tn-rte">
+                    <h2>Todos from MongoDB (hbs variable)</h2>
+                    <ul>
+                    {{#each todos}}
+                        <li>{{@index}}) {{this.text}}</li>
+                    {{/each}}
+                    </ul>
                 </div>
             </div>
         </div>

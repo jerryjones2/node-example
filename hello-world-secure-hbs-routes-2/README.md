@@ -20,3 +20,7 @@ https://medium.com/@ramandeep.singh.1983/enterprise-web-app-authentication-using
 
 https://www.keycloak.org/docs/4.8/securing_apps/index.html#_nodejs_adapter
 
+
+NodeJS HBS template info:
+https://webapplog.com/handlebars/
+

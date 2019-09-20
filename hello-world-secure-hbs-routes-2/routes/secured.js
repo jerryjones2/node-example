@@ -10,4 +10,5 @@ let keycloak = require('../server.js').keycloak;
 router.get('/', keycloak.protect(),securedController.index);
 
 
+
 module.exports = router;
