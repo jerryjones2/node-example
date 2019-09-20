@@ -9,7 +9,8 @@ var database = "TodoApp";
 var mongoUrl = `mongodb+srv://${auth}@${hostname}/${database}?retryWrites=true&w=majority`;
 var options = {
   poolSize: 4,
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 }
 var con = mongoose.createConnection(mongoUrl, options);
 
