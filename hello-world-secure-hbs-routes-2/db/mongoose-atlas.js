@@ -4,7 +4,7 @@ mongoose.Promise = global.Promise
 
 var hostname = "mytn-test-cluster-o06iq.mongodb.net";
 var auth = "devuser:devuser";
-var database = "TodoApp";
+var database = "ComplexApps";
 
 var mongoUrl = `mongodb+srv://${auth}@${hostname}/${database}?retryWrites=true&w=majority`;
 var options = {

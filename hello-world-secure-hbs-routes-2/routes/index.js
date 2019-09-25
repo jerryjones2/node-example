@@ -6,6 +6,7 @@
     apiRoute = require('./apis'),
     publicRoute = require('./public'),
     securedRoute = require('./secured'),
+    salaryRoute = require('./salary'),
     errorRoute = require('./error');
 
 function init(server) {
@@ -25,6 +26,7 @@ function init(server) {
     server.use('/api', apiRoute);
     server.use('/public', publicRoute);
     server.use('/secured', securedRoute);
+    server.use('/salary', salaryRoute);
     server.use('/error', errorRoute);
 }
 

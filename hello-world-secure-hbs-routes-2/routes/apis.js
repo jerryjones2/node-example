@@ -2,16 +2,16 @@
 
 const
     express = require('express'),
-    todoController = require('../controllers/todos');
+    controller = require('../controllers/todos');
 
 let router = express.Router();
 let keycloak = require('../server.js').keycloak;
 
 var {Todo} = require('../db/models/todo');
 
-router.get('/todos',keycloak.protect(),todoController.getAll);
+router.get('/todos',keycloak.protect(),controller.getAll);
 
-router.post('/todos',keycloak.protect(),todoController.create);
+router.post('/todos',keycloak.protect(),controller.create);
 
 
 module.exports = router;

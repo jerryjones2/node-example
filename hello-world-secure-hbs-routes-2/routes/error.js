@@ -2,10 +2,10 @@
 
 const
     express = require('express'),
-    errorController = require('../controllers/error');
+    controller = require('../controllers/error');
 
 let router = express.Router();
 
-router.get('/', errorController.index);
+router.get('/', controller.index);
 
 module.exports = router;

@@ -2,12 +2,12 @@
 
 const
     express = require('express'),
-    securedController = require('../controllers/secured');
+    controller = require('../controllers/secured');
 
 let router = express.Router();
 let keycloak = require('../server.js').keycloak;
 
-router.get('/', keycloak.protect(),securedController.index);
+router.get('/', keycloak.protect(),controller.index);
 
 
 
