@@ -1,7 +1,6 @@
 'use strict';
 var mongoose = require('mongoose');
 var {EmployeeSalary} = require('../db/models/EmployeeSalary');
-
 var EmployeeSalary  = mongoose.model('EmployeeSalary');
 
 function index (req, res) {
@@ -18,8 +17,8 @@ function search (req, res, next) {
     var jsonString = JSON.stringify(json);
     //console.log(jsonString);
     if(jsonString == "{}"){
-        console.log('No Search Values');
-        res.status(500).send('No Search Values');
+        console.log('No Search Criteria');
+        res.status(500).send('Please enter search criteria');
         return
     }
     EmployeeSalary.find(json, function(err, docs) {
@@ -29,7 +28,7 @@ function search (req, res, next) {
             res.json({success : "ERROR", status : 401});
             throw err;
         }
-    });
+    }).sort({lastName:1,firstName:1});
 }
 
 function distinctAgencyNames(req, res, next) {

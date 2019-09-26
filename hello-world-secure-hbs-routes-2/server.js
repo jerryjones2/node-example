@@ -34,7 +34,7 @@ function create(config) {
         store: memoryStore
       }));
 
-    var hbs = require('./hbs.js').create();
+    var hbs = require('./hbs').create();
     server.set('view engine','hbs');
 
     server._router.use(keycloak.middleware({
