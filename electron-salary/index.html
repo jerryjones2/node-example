@@ -1,0 +1,322 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="pageID" content="42961">
+		<title>TN State Salaries</title>
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+	
+		<link rel="stylesheet" href="https://tn.gov/etc/clientlibs/tncore/main.css" type="text/css">
+		<!-- This line was added to manually grab the tngov css to make sure it was working -->
+		<link rel="stylesheet" href="https://tn.gov/etc/clientlibs/tn-sites/tngov.css" type="text/css">
+		<!-- End inserted css testing file -->
+
+		<!-- <link rel="stylesheet" href="index.css"> -->
+		<script   src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="   crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+		<script>
+            $(document).ready(function(){
+				var endpoint = "http://localhost:3001";
+                var tableHeader = '<tr><th>Agency Name</th><th>Last Name</th><th>First Name</th><th>Job Title</th><th>Compensation Rate</th><th>Compensation Rate Period</th><th>Full/Part</th></tr>';
+
+                function objectifyForm(formArray) {//serialize data function
+                    var returnArray = {};
+                    for (var i = 0; i < formArray.length; i++){
+                        if(formArray[i]["value"] != '') {
+                            returnArray[formArray[i]["name"]] = formArray[i]["value"];
+                        }
+                    }
+                    return returnArray;
+                }
+                function convertFormToJson(form) {
+                    var formData = form.serializeArray();
+                    var jsonData = objectifyForm(formData);
+                    jsonData = JSON.stringify(jsonData);
+                    return jsonData;
+                }
+
+                $.ajax({
+                        url: endpoint + '/salary/distinctJobTitles',                        
+                        type: 'GET',                                  
+                        success: function(json){    // response contains json object in it
+                            var options = '<option value=""></option>';
+                            $.each(json.data, function (i, item) {
+                                options += '<option value="'+json.data[i]+'">' +json.data[i]+ "</option>";  
+                            });
+
+                            $("#jobTitle").html(options);    // It will put the dynamic <option> set into the dropdown
+                        }
+				});
+				
+				$.ajax({
+                        url: endpoint + '/salary/distinctAgencyNames',                        
+                        type: 'GET',                                  
+                        success: function(json){    // response contains json object in it
+                            var options = '<option value=""></option>';
+                            $.each(json.data, function (i, item) {
+                                options += '<option value="'+json.data[i]+'">' +json.data[i]+ "</option>";  
+                            });
+
+                            $("#agencyName").html(options);    // It will put the dynamic <option> set into the dropdown
+                        }
+                });
+
+                $("#submit").on('click', function(){
+                    var form = $("#search-form");
+                    var jsonData = convertFormToJson(form);
+                   $.ajax({
+                    url: endpoint + '/salary/search',
+                    type: 'POST',
+                    dataType : 'json', // data type
+                    data : jsonData, // post data || get data
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function(json)
+                    {
+                        //console.log('Salary search status code: '+json.status);
+                        
+                        $("#searchTable tbody").empty();
+                        var trHTML = '';
+
+                        trHTML += tableHeader;
+                        
+                        if(json.data.length == 0) {
+                            console.log('no results')
+                            trHTML += '<tr><td colspan="7">No Results</td></tr>';
+                        }else{
+                            $.each(json.data, function (i, item) {
+                                trHTML += '<tr>'
+                                trHTML += '<td>' + json.data[i].agencyName + '</td>' 
+                                trHTML += '<td>' + json.data[i].lastName + '</td>' 
+                                trHTML += '<td>' + json.data[i].firstName + '</td>' 
+                                trHTML += '<td>' + json.data[i].jobTitle + '</td>' 
+                                trHTML += '<td>' + json.data[i].compRate + '</td>' 
+                                trHTML += '<td>' + json.data[i].compRatePeriod + '</td>' 
+                                trHTML += '<td>' + json.data[i].fullPart + '</td>' 
+                                trHTML += '</tr>'
+                                ;
+                            });
+                        }
+                        $("#searchTable tbody").append(trHTML);
+ 
+
+                    },
+                    error: function(error) {
+                        if(typeof error.responseText == 'undefined') {
+                            message = "Webservices are offline";
+                        }else{
+                            message = error.responseText;
+                        }
+                        console.log(message);
+                        $("#searchTable tbody").empty();
+                        var trHTML = '';
+                        trHTML += tableHeader;
+                        trHTML += '<tr><td colspan="7">' + message + '</td></tr>';
+                        $("#searchTable tbody").append(trHTML);
+                    }
+                });
+                });
+            })
+
+        </script>
+	</head>
+    <body>
+    <div class="tn-header">
+        <header id="header">
+            <div class="row center-block top-nav">
+                <a class="logo tn-logo" href="/" data-logo="state-government">
+                    <div>Home</div>
+                </a>
+               
+            </div>
+            <div class="row center-block agency">
+                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 columns title">
+                    <a href="#">
+                        <img src="https://tn.gov/etc/clientlibs/tncore/main/img/logos/state-government.png" alt="  State of Tennessee" id="entity-name" data-pin-nopin="true"></a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 columns text-right">
+                    <!-- Begin Search Component -->
+                   
+                    <!-- END Search Component -->
+                </div>
+            </div>
+            <div class="backdrop" style="background-image:url('https://www.tn.gov/content/dam/headers/test.jpg')"></div>
+        </header>
+    </div>
+        
+        <!-- Begin Page Title Component -->
+        <div class="tn-pagetitle">
+            <h1>Search State Employee Salaries</h1>
+        </div>
+        <!-- End Page Title Component -->
+
+        <!-- Start panel component -->
+        <div class="tn-panel">
+            <div class="panel">
+                <div class="tn-rte">
+                    <h2>Search</h2>
+                    <div class="container">
+                    <form id="search-form" action="#">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input id="firstName" class="form-control" name="firstName" type="text" class="required">  
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input id="lastName" class="form-control" name="lastName" type="text" class="required"> 
+                                </div>
+							</div>
+							<div class="col-sm">
+								<div class="form-group">
+									<label for="jobTitle">JobTitle</label>
+									<select class="custom-select" id="jobTitle" name="jobTitle">
+										<option selected></option>
+										<option value="NotLoaded">Values Not Loaded</option>
+									</select>
+								</div>
+							</div>
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="agencyName">Agency Name</label>
+                                    <select class="custom-select" id="agencyName" name="agencyName">
+                                        <option selected></option>
+                                        <option value="NotLoaded">Values Not Loaded</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div>&nbsp;</div>
+                                <button id="submit" type="button" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="tn-rte">
+                    <table class="table table-bordered table-striped" id="searchTable" border='1'>
+                            <tr><th>Agency Name</th><th>Last Name</th><th>First Name</th><th>Job Title</th><th>Compensation Rate</th><th>Compensation Rate Period</th><th>Full/Part</th></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+		<!-- Start panel component -->
+
+<!-- Begin Footer -->
+<div class="tn-footer">
+	<footer id="footer">
+		<div id="footer-top">
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-6 columns">
+			<ul class="inline-list"> 
+				<li id="footer-livechat" class>
+					<a href="#" class="icon-chat" onClick="openFooterChat()" target="_blank">
+						Live Chat
+					</a>
+					<div class="livechat">
+						<script type='text/javascript' >
+							function openFooterChat() {
+								window.open ("https://help.tn.gov/sn_customerservice_tn_chat_selector.do", "popup", "width=900, height=600"); 
+							 };
+						</script>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+				<div class="col-lg-6 col-md-6 col-sm-6 columns text-right">
+					<ul class="inline-list">
+						<li><a href="https://www.tn.gov/help-tn-main.html" class="icon-help-circled">Help</a></li>
+						<li id="footer-share" class="has-drop"><a href="#" class="icon-export">Share</a>
+					<div class="drop right">
+						<div class="box">
+							<span
+								class='st_sharethis_large'
+								displayText='ShareThis'></span>
+							<span
+								class='st_facebook_large'
+								displayText='Facebook'></span>
+							<span
+								class='st_twitter_large'
+								displayText='Tweet'></span>
+							<span
+								class='st_googleplus_large'
+								displayText='Google +'></span>
+							<span
+								class='st_linkedin_large'
+								displayText='LinkedIn'></span>
+							<script type="text/javascript">
+								var switchTo5x = true;
+							</script>
+							<script
+								type="text/javascript"
+								src="https://ws.sharethis.com/button/buttons.js"></script>
+							<script type="text/javascript">
+								if (typeof stLight !== 'undefined') {
+									stLight.options({
+										publisher : "5dc356bf-5442-455c-b483-ab8ca7d8cd15",
+										doNotHash : false,
+										doNotCopy : false,
+										hashAddressBar : false
+									});
+								}
+							</script>
+						</div>
+					</div></li>
+
+						<li id="footer-translate">
+			<a href="#" class="icon-book">Translate</a>
+			<div class="drop right">
+			  <div class="box">
+				<div id="google_translate_element"></div>
+			  </div>
+			</div>
+		  </li>
+						<li id="footer-fontsize">
+							<a href="#" class="icon-font">Font Size</a>
+							<div class="drop right">
+								<div class="box">
+									<ul class="inline-list">
+										<li><a class="button" data-font-size="small">a-</a></li>
+										<li><a class="button" data-font-size="normal">Normal</a></li>
+										<li><a class="button" data-font-size="large">A+</a></li>
+									</ul>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<a href="#" class="starball"><img src="https://tn.gov/etc/clientlibs/tncore/main/img/footer-starball.png" alt="Tristar" width="100%"></a>
+		</div>
+		<div id="footer-bottom">
+			<div class="row">
+				<div class="large-12 medium-12 columns">
+		<ul class="inline-list">
+		  <li><a href="https://tn.gov" class="first">TN.gov</a></li>
+		  
+		</ul>
+	  </div>
+	  <div class="large-12 medium-12 columns text-right">
+		<ul class="inline-list">
+		 <li></li>
+		</ul>
+	  </div>
+			</div>
+		</div>
+	</footer>
+</div>
+<!-- End Footer -->
+<div id="overlay"></div>
+
+<script type="text/javascript" src="https://tn.gov/etc/clientlibs/tncore/main.js"></script>
+    </body>
+</html>
