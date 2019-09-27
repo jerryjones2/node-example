@@ -26,6 +26,21 @@
                     return jsonData;
                 }
 
+
+                $.ajax({
+                        url: '/salary/distinctJobTitles',                        
+                        type: 'GET',                                  
+                        success: function(json){    // response contains json object in it
+                            var options = '<option value=""></option>';
+                            $.each(json.data, function (i, item) {
+                                options += '<option value="'+json.data[i]+'">' +json.data[i]+ "</option>";  
+                            });
+
+                            $("#jobTitle").html(options);    // It will put the dynamic <option> set into the dropdown
+                        }
+				});
+
+
                 $.ajax({
                         url: '/salary/distinctAgencyNames',                        
                         type: 'GET',                                  
@@ -127,6 +142,15 @@
                                     <input id="lastName" class="form-control" name="lastName" type="text" class="required"> 
                                 </div>
                             </div>
+                            <div class="col-sm">
+								<div class="form-group">
+									<label for="jobTitle">JobTitle</label>
+									<select class="custom-select" id="jobTitle" name="jobTitle">
+										<option selected></option>
+										<option value="NotLoaded">Values Not Loaded</option>
+									</select>
+								</div>
+							</div>
                             <div class="col-sm">
                                 <div class="form-group">
                                     <label for="agencyName">Agency Name</label>

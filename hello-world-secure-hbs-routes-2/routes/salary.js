@@ -11,6 +11,8 @@ router.get('/', controller.index);
 
 router.post('/search', controller.search);
 
+router.get('/distinctJobTitles', controller.distinctJobTitles);
+
 router.get('/distinctAgencyNames', controller.distinctAgencyNames);
 
 module.exports = router;

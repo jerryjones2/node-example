@@ -31,6 +31,19 @@ function search (req, res, next) {
     }).sort({lastName:1,firstName:1});
 }
 
+function distinctJobTitles(req, res, next) {
+
+    EmployeeSalary.collection.distinct('jobTitle', function(err, docs) {
+        if (!err){ 
+            res.json({success : "Found Successfully", status : 200, data: docs.sort()});
+        } else { 
+            console.log('Error')
+            throw err;
+        }
+    });
+  
+};
+
 function distinctAgencyNames(req, res, next) {
 
     EmployeeSalary.collection.distinct('agencyName', function(err, docs) {
@@ -48,5 +61,6 @@ function distinctAgencyNames(req, res, next) {
 module.exports = {
     index,
     search,
+    distinctJobTitles,
     distinctAgencyNames
 };
