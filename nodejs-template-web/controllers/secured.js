@@ -20,15 +20,15 @@ function index (req, res) {
 }
 
 function secured2 (req, res) {
-    res.render('secured2.hbs',
+    res.render('home.hbs',
         {
             pageTitle: 'Secured 2',
-            message: 'Welcome to Secured 2 Page!'
+            message: 'Welcome to Secured 2 Page'
         }
     )
 }
 function secured3 (req, res) {
-    res.render('secured3.hbs',
+    res.render('home.hbs',
         {
             pageTitle: 'Secured 3',
             message: 'Welcome to Secured 3 Page'

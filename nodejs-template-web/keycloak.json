@@ -1,0 +1,10 @@
+{
+  "realm": "MyTN",
+  "auth-server-url": "https://sso-dev.tn.gov/auth",
+  "ssl-required": "all",
+  "resource": "mytn-node-web",
+  "credentials": {
+    "secret": "7ceaee9b-efe6-45d7-88b0-ab07df9379a2"
+  },
+  "confidential-port": 0
+}

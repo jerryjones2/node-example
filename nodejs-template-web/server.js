@@ -25,7 +25,8 @@ function create(config) {
     server.set('port', config.port);
 
     server.use(bodyParser.json());
-    server.use(favicon(path.join(__dirname, 'images', 'favicon.ico')))
+    server.use(favicon(path.join(__dirname, 'static/images', 'favicon.ico')));
+    server.use('/static', express.static(path.join(__dirname, 'static')));
     server.use(cors()); // Enable CORS support
     server.use(session({
         secret: 'hello-world-secure-hbs-routes-2-secret',
@@ -45,7 +46,7 @@ function create(config) {
     let routes = require('./routes');
     
     routes.init(server);
-    
+
     server.use((err, req, res, next) => {
         console.log("ERROR: "+err);
         next();
@@ -64,6 +65,6 @@ function start() {
 
 module.exports = {
     create,
-    start: start,
-    keycloak: keycloak
+    start,
+    keycloak
 }

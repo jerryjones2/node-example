@@ -95,6 +95,30 @@ router.get('/secured',keycloak.protect(),(req,res) => {
     }
   )
 });
+router.get('/secured/2',keycloak.protect(),(req,res) => {
+  console.log('Success: ' + req.protocol + '://' + req.get('host') + req.originalUrl);
+  res.render('secured.hbs',
+    {
+      pageTitle: 'Secured Page 2'
+    }
+  )
+});
+router.get('/secured/3',keycloak.protect(),(req,res) => {
+  console.log('Success: ' + req.protocol + '://' + req.get('host') + req.originalUrl);
+  res.render('secured.hbs',
+    {
+      pageTitle: 'Secured Page 3'
+    }
+  )
+});
+router.post('/secured/posttry',keycloak.protect(),(req,res) => {
+  console.log('Success: ' + req.protocol + '://' + req.get('host') + req.originalUrl);
+  res.render('secured.hbs',
+    {
+      pageTitle: 'Secured Page From Post'
+    }
+  )
+});
 // ====================================================
 // Services
 // ====================================================

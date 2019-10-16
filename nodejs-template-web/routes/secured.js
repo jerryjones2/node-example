@@ -14,4 +14,5 @@ router.get('/2', keycloak.protect(),controller.secured2);
 router.get('/3', keycloak.protect(),controller.secured3);
 
 
+
 module.exports = router;
